@@ -1,8 +1,5 @@
-from Agents.execution_agent import ExecutionAgent
-from Agents.task_creation_agent import TaskCreationAgent
-from Agents.prioritization_agent import PrioritizationAgent
-from Agents.salience_agent import SalienceAgent
-from Agents.status_agent import StatusAgent
+from pathlib import Path
+from Utilities.initialize_agents import initialize_agents
 from Utilities.function_utils import Functions
 from Utilities.storage_interface import StorageInterface
 from Logs.logger_config import Logger
@@ -12,11 +9,10 @@ logger.set_level('info')
 
 # Load Agents
 storage = StorageInterface()
-taskCreationAgent = TaskCreationAgent()
-prioritizationAgent = PrioritizationAgent()
-executionAgent = ExecutionAgent()
-salienceAgent = SalienceAgent()
-statusAgent = StatusAgent()
+agents_dir = Path('Agents')
+agents_list = ['task_creation_agent', 'prioritization_agent', 'execution_agent', 'salience_agent', 'status_agent']
+agents = initialize_agents(agents_dir, agents_list)
+locals().update(agents)
 
 # Add a variable to set the mode
 functions = Functions()
@@ -37,11 +33,11 @@ while True:
     else:
         feedback = functions.check_auto_mode()
 
-    data = salienceAgent.run_salience_agent(feedback=feedback)
+    data = salience_agent.run_salience_agent(feedback=feedback)
 
     logger.log(f"Data: {data}", 'debug')
 
-    status = statusAgent.run_status_agent(data)
+    status = status_agent.run_status_agent(data)
     # quit()
 
 
